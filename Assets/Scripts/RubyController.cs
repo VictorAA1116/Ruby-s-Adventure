@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class RubyController : MonoBehaviour
 {
@@ -29,6 +31,16 @@ public class RubyController : MonoBehaviour
     public AudioClip hitSound;
 
     public ParticleSystem hitPrefab;
+    public ParticleSystem healthPrefab;
+
+    public int score = 0;
+    public GameObject scoreText;
+    TextMeshProUGUI scoreTextText;
+
+    public GameObject gameOver;
+    TextMeshProUGUI gameOverText;
+    bool gameOverBool = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +49,8 @@ public class RubyController : MonoBehaviour
         currentHealth = maxHealth;
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        scoreTextText = scoreText.GetComponent<TextMeshProUGUI>();
+        gameOverText = gameOver.GetComponent<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
@@ -81,6 +95,31 @@ public class RubyController : MonoBehaviour
                 }
             }
         }
+
+        scoreTextText.text = "Robots Fixed: " + score.ToString();
+
+        if (score == 2)
+        {
+            gameOverBool = true;
+            gameOver.SetActive(true);
+            gameOverText.text = "You win! Game created by Group 5";
+            speed = 0.0f;
+        }
+        if (currentHealth == 0)
+        {
+            gameOverBool = true;
+            gameOver.SetActive(true);
+            gameOverText.text = "You lost! Press R to restart!";
+            speed = 0.0f;
+        }
+        
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (gameOverBool == true)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+        }
     }
 
     void FixedUpdate()
@@ -101,8 +140,14 @@ public class RubyController : MonoBehaviour
             
             isInvincible = true;
             invincibleTimer = timeInvincible;
+            ParticleSystem particleObject = Instantiate(hitPrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.Euler(90.0f, 0.0f, 0.0f));
 
             PlaySound(hitSound);
+        }
+
+        if (amount > 0)
+        {
+            ParticleSystem particleObject = Instantiate(healthPrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.Euler(90.0f, 0.0f, 0.0f));
         }
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
@@ -124,5 +169,12 @@ public class RubyController : MonoBehaviour
     public void PlaySound(AudioClip clip)
     {
         audioSource.PlayOneShot(clip);
+    }
+    public void ChangeScore(int scoreAmount)
+    {
+        if (scoreAmount > 0)
+        {
+            score = score + scoreAmount;
+        }
     }
 }
