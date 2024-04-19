@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1471012483887740763}
   m_Layer: 8
   m_Name: Ruby
-  m_TagString: Untagged
+  m_TagString: RubyController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -107,7 +107,10 @@ MonoBehaviour:
   projectilePrefab: {fileID: 2504775040512649699, guid: f325ae5887472874ba47071911e2a067, type: 3}
   throwSound: {fileID: 8300000, guid: b2edfd40873655249ba0e01a5cf705be, type: 3}
   hitSound: {fileID: 8300000, guid: 9b1bb1f450b7d444fa4a8019d13519a7, type: 3}
-  hitPrefab: {fileID: 4719172487275417306, guid: 5ec9d92bca02b854a9f08ed0d2f1ea3f, type: 3}
+  hitPrefab: {fileID: 8579613150114547670, guid: 5ec9d92bca02b854a9f08ed0d2f1ea3f, type: 3}
+  healthPrefab: {fileID: 1623740772410972421, guid: b94ac3e9a107880428eb28537262b762, type: 3}
+  score: 0
+  scoreText: {fileID: 5873403467745596933, guid: b5aaa1c7dbbb28347a374ebf1d5af70e, type: 3}
 --- !u!50 &3673015308597019276
 Rigidbody2D:
   serializedVersion: 4
