@@ -23,6 +23,8 @@ public class RubyController : MonoBehaviour
 
     Animator animator;
     Vector2 lookDirection = new Vector2(1,0);
+    Vector2 projectile2Direction = new Vector2(1,0);
+    Vector2 projectile3Direction = new Vector2(1,0);
 
     public GameObject projectilePrefab;
 
@@ -40,6 +42,10 @@ public class RubyController : MonoBehaviour
     public GameObject gameOver;
     TextMeshProUGUI gameOverText;
     bool gameOverBool = false;
+
+    public bool starCollected = false;
+    float starTimer;
+    public float timePoweredUp = 10.0f;
 
 
     // Start is called before the first frame update
@@ -65,6 +71,10 @@ public class RubyController : MonoBehaviour
         {
             lookDirection.Set(move.x, move.y);
             lookDirection.Normalize();
+            projectile2Direction = Quaternion.AngleAxis(30, Vector3.forward) * lookDirection;
+            projectile2Direction.Normalize();
+            projectile3Direction = Quaternion.AngleAxis(-30, Vector3.forward) * lookDirection;
+            projectile3Direction.Normalize();
         }
 
         animator.SetFloat("Look X", lookDirection.x);
@@ -78,9 +88,16 @@ public class RubyController : MonoBehaviour
                 isInvincible = false;
         }
         
+        if (starCollected)
+        {
+            starTimer -= Time.deltaTime;
+            if (starTimer < 0)
+                starCollected = false;
+        }
+        
         if(Input.GetKeyDown(KeyCode.C))
         {
-            Launch();
+            Launch(starCollected);
         }
         
         if (Input.GetKeyDown(KeyCode.X))
@@ -154,13 +171,33 @@ public class RubyController : MonoBehaviour
         UIHealthBar.instance.SetValue(currentHealth/(float)maxHealth);
     }
 
-    void Launch()
+    void Launch(bool starCollected)
     {
-        GameObject projectileObject = Instantiate(projectilePrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
+        if (starCollected == true)
+        {
+            GameObject projectileObject1 = Instantiate(projectilePrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
 
-        Projectile projectile = projectileObject.GetComponent<Projectile>();
-        projectile.Launch(lookDirection, 300);
+            Projectile projectile1 = projectileObject1.GetComponent<Projectile>();
+            projectile1.Launch(lookDirection, 300);
 
+            GameObject projectileObject2 = Instantiate(projectilePrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
+
+            Projectile projectile2 = projectileObject2.GetComponent<Projectile>();
+            projectile2.Launch(projectile2Direction, 300);
+
+            GameObject projectileObject3 = Instantiate(projectilePrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
+
+            Projectile projectile3 = projectileObject3.GetComponent<Projectile>();
+            projectile3.Launch(projectile3Direction, 300);
+        }
+        if (starCollected == false)
+        {
+            GameObject projectileObject = Instantiate(projectilePrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
+
+            Projectile projectile = projectileObject.GetComponent<Projectile>();
+            projectile.Launch(lookDirection, 300);
+        }
+        
         animator.SetTrigger("Launch");
         
         PlaySound(throwSound);
@@ -176,5 +213,11 @@ public class RubyController : MonoBehaviour
         {
             score = score + scoreAmount;
         }
+    }
+
+    public void PowerUp()
+    { 
+        starCollected = true;
+        starTimer = timePoweredUp;
     }
 }
