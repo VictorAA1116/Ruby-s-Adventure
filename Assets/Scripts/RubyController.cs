@@ -31,6 +31,8 @@ public class RubyController : MonoBehaviour
     AudioSource audioSource;
     public AudioClip throwSound;
     public AudioClip hitSound;
+    public AudioClip loseSound;
+    public bool alreadyPlayed = false;
 
     public ParticleSystem hitPrefab;
     public ParticleSystem healthPrefab;
@@ -110,6 +112,10 @@ public class RubyController : MonoBehaviour
                 {
                     character.DisplayDialog();
                 }
+
+               
+
+               
             }
         }
 
@@ -128,6 +134,13 @@ public class RubyController : MonoBehaviour
             gameOver.SetActive(true);
             gameOverText.text = "You lost! Press R to restart!";
             speed = 0.0f;
+           if (!alreadyPlayed)
+           {
+                audioSource.PlayOneShot(loseSound);
+                alreadyPlayed = true;
+           }
+            
+            
         }
         
         if (Input.GetKeyDown(KeyCode.R))
